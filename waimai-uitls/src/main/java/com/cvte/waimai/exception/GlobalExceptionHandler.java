@@ -16,8 +16,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = {Exception.class})
     @ResponseBody
     public <T> MsgUtils<T> exceptionHandler(Exception e) {
-
-        List list  = new ArrayList<>();
+        e.printStackTrace();
         if (e instanceof AppException) {
             AppException appException = (AppException) e;
             return MsgUtils.fail(appException.getCode(), appException.getMsg());
