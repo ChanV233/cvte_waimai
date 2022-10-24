@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="waimai-order-productor-8001" />
+        <module name="waimai-service" />
+        <module name="waimai-dishes-management" />
+        <module name="waimai-conjob-11001" />
+        <module name="waimai-eureka-7001" />
+        <module name="waimai-uitls" />
+        <module name="waimai-consumer" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="waimai-consumer-80" target="8" />
+      <module name="waimai-dishes-management-6001" target="8" />
+      <module name="waimai-order-consumer-9001" target="8" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

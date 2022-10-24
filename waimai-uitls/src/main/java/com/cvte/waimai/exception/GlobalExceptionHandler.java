@@ -1,0 +1,22 @@
+package com.cvte.waimai.exception;
+
+import com.cvte.waimai.utils.MsgUtils;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+@ControllerAdvice
+public class GlobalExceptionHandler {
+
+
+    @ExceptionHandler(value = {Exception.class})
+    @ResponseBody
+    public <T> MsgUtils<T> exceptionHandler(Exception e) {
+        if (e instanceof AppException) {
+            AppException appException = (AppException) e;
+            return MsgUtils.fail(appException.getCode(), appException.getMsg());
+        }
+        return MsgUtils.fail(500, "服务器异常", e.getMessage());
+    }
+
+}

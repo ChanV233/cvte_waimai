@@ -1,0 +1,52 @@
+server:
+  port: 11001
+
+
+#Eureka的配置，服务注册到哪里
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:7001/eureka/
+  instance:
+    instance-id: order-conjob-11001  #修改eureka上的默认描述信息！
+
+spring:
+  application:
+    name: WAIMAI-ORDER-CONJOB
+  cloud:
+    sentinel:
+      transport:
+        port: 8719
+        dashboard: localhost:10000
+  datasource:
+    username: root
+    password: '123456'
+    url: jdbc:mysql://127.0.0.1:3306/waimai?characterEncoding=UTF-8&useSSL=true&serverTimezone=UTC
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    initialSize: 5
+    minIdle: 5
+    maxActive: 20
+    maxWait: 60000
+    timeBetweenEvictionRunsMillis: 60000
+    minEvictableIdleTimeMillis: 300000
+    validationQuery: SELECT 1 FROM DUAL
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    poolPreparedStatements: true
+    filters: stat,wall,log4j
+    maxPoolPreparedStatementPerConnectionSize: 20
+    useGlobalDataSourceStat: true
+    connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=500
+
+feign:
+  httpclient:
+    connection-timeout: 30000
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+

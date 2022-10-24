@@ -1,0 +1,21 @@
+server:
+  port: 7001
+
+#Eurka配置
+eureka:
+  instance:
+    hostname: waimaiEureka-7001 #Eureka服务端的实例名称
+  client:
+    register-with-eureka: false #表示是否向eureka注册中心注册自己
+    fetch-registry: false #如果fetch-registry为false，则表示自己为注册中心
+    service-url:
+      #单机：
+      defaultZone: http://localhost:${server.port}/eureka/
+      #集群（关联）
+      #defaultZone: http://localhost:7002/eureka/
+
+feign:
+  httpclient:
+    connection-timeout: 30000
+
+
