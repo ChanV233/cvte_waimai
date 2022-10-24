@@ -11,7 +11,7 @@ public enum AppExceptionCodeMsg {
     ORDER_NOT_FOUND(10001, "找不到订单"),
     ILLEGAL_DISH(10002, "不合法菜品"),
     DISH_NOT_FOUND(10003, "找不到菜品"),
-
+    NETWORK_BUSY(10004, "网络繁忙，请稍后再试")
     ;
 
     private int code;

@@ -1,6 +1,7 @@
 package com.cvte.waimai.utils;
 
 import com.cvte.waimai.exception.AppException;
+import com.cvte.waimai.exception.AppExceptionCodeMsg;
 
 import java.io.Serializable;
 
@@ -34,6 +35,11 @@ public class MsgUtils<T> implements Serializable{
 
     public static MsgUtils fail(){
         MsgUtils result = build(500, "fails");
+        return result;
+    }
+
+    public static MsgUtils fail(AppExceptionCodeMsg appExceptionCodeMsg) {
+        MsgUtils result = build(appExceptionCodeMsg.getCode(), appExceptionCodeMsg.getMsg());
         return result;
     }
 
