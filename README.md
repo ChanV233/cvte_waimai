@@ -50,18 +50,18 @@ PRIMARY KEY (`order_id`)
 2. RocketMq：性能高、消息可靠、功能完善、有顺序消息、延时消息、事务消息等，可为后续Hold单等业务或接入仓储 、物流模块提供扩展；配套dashboard更加方便对MQ进行监控
 ![img.png](img.png)
 #### 压测
-接口：/order/producer
+接口：/order/producer 
 机器配置：4核/16G
 压测结果：1500qps、毫秒级响应
 ![img_2.png](img_2.png)
 ### 菜品管理模块
 #### 流程图
 - 插入菜品
-
+![img_3.png](img_3.png)
 - 获取菜品
-
+![img_4.png](img_4.png)
 - 删除、更新菜品
-
+![img_5.png](img_5.png)
 #### 数据库表
 ```sql
 CREATE TABLE `wm_dish` (
