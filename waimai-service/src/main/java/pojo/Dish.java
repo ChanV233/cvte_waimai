@@ -12,11 +12,11 @@ import java.util.Date;
 @NoArgsConstructor
 @ToString
 public class Dish {
-    private int dish_id;
-    private String dish_name;
-    private String image_url;
+    private int dishId;
+    private String dishName;
+    private String imageUrl;
     private double price;
-    private int merchant_id;
-    private int is_deleted;
-    private Date created_time;
+    private int merchantId;
+    private int isDeleted;
+    private Date createdTime;
 }

@@ -39,7 +39,7 @@ public class DishController {
     @ApiOperation("更新菜品")
     @PostMapping(value = "/dish/update")
     public MsgUtils updateDish(@RequestBody Dish dish) {
-        if (dish.getDish_id() == 0) {
+        if (dish.getDishId() == 0) {
             throw new AppException(AppExceptionCodeMsg.ILLEGAL_DISH);
         }
         return this.dishesManagementService.updateDish(dish);

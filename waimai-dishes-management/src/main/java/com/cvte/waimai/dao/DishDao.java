@@ -17,9 +17,10 @@ public interface DishDao {
      * @param dish
      */
     @Insert("INSERT INTO wm_dish (dish_name, image_url, price, merchant_id) " +
-            "VALUES(#{dish.dish_name}, #{dish.image_url}, #{dish.price}, #{dish.merchant_id})")
-    @Options(useGeneratedKeys = true, keyProperty = "dish_id", keyColumn = "dish_id")
+            "VALUES(#{dish.dishName}, #{dish.imageUrl}, #{dish.price}, #{dish.merchantId})")
+    @Options(useGeneratedKeys = true, keyProperty = "dishId", keyColumn = "dish_id")
     int addDish(@Param("dish") Dish dish);
+
 
     /**
      * 删除菜品（软删）
@@ -32,8 +33,8 @@ public interface DishDao {
      * 更新菜品
      * @param dish
      */
-    @Update("UPDATE wm_dish SET dish_name = #{dish.dish_name}, image_url = #{dish.image_url}, " +
-            "price = #{dish.price}, merchant_id = #{dish.merchant_id}, is_deleted = #{dish.is_deleted} WHERE dish_id = #{dish.dish_id}")
+    @Update("UPDATE wm_dish SET dish_name = #{dish.dishName}, image_url = #{dish.imageUrl}, " +
+            "price = #{dish.price}, merchant_id = #{dish.merchantId}, is_deleted = #{dish.isDeleted} WHERE dish_id = #{dish.dishId}")
     void updateDish(@Param("dish") Dish dish);
 
     /**
@@ -41,7 +42,7 @@ public interface DishDao {
      * @param dishId
      * @return
      */
-    @Select("SELECT * FROM wm_dish WHERE dish_id = #{dishId}")
+    @Select("SELECT * FROM wm_dish WHERE dish_id = #{dishId} and is_deleted = 0")
     Dish getDishById(@Param("dishId") int dishId);
 
     /**

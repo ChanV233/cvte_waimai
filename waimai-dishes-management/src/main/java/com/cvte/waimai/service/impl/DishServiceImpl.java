@@ -42,10 +42,10 @@ public class DishServiceImpl implements DishService{
     @Transactional(rollbackFor = Exception.class)
     public MsgUtils addDish(Dish dish) {
         this.dishDao.addDish(dish);
-        String curDishCacheKey = String.format(KEY_PREFIX, dish.getDish_id());
+        String curDishCacheKey = String.format(KEY_PREFIX, dish.getDishId());
         this.bloomFilter.add(curDishCacheKey);
         logger.info("dish add success");
-        return MsgUtils.success();
+        return MsgUtils.success(dish);
     }
 
     @Override
@@ -62,24 +62,27 @@ public class DishServiceImpl implements DishService{
     @Override
     @Transactional(rollbackFor = Exception.class)
     public MsgUtils updateDish(Dish dish) throws InterruptedException {
-        Dish oldDish = this.dishDao.getDishById(dish.getDish_id());
-        if (null == dish.getDish_name()) {
-            dish.setDish_name(oldDish.getDish_name());
+        Dish oldDish = this.dishDao.getDishById(dish.getDishId());
+        if (oldDish == null) {
+            throw new AppException(AppExceptionCodeMsg.ILLEGAL_DISH);
         }
-        if (null == dish.getImage_url()) {
-            dish.setImage_url(oldDish.getImage_url());
+        if (null == dish.getDishName()) {
+            dish.setDishName(oldDish.getDishName());
+        }
+        if (null == dish.getImageUrl()) {
+            dish.setImageUrl(oldDish.getImageUrl());
         }
         if (0L == dish.getPrice()) {
             dish.setPrice(oldDish.getPrice());
         }
-        if (0 == dish.getMerchant_id()) {
-            dish.setMerchant_id(oldDish.getMerchant_id());
+        if (0 == dish.getMerchantId()) {
+            dish.setMerchantId(oldDish.getMerchantId());
         }
-        String curDishCacheKey = String.format(KEY_PREFIX, dish.getDish_id());
+        String curDishCacheKey = String.format(KEY_PREFIX, dish.getDishId());
         redisUtils.remove(curDishCacheKey);
         this.dishDao.updateDish(dish);
         dishCacheMqUtils.sendMessage(curDishCacheKey);
-        logger.info(dish.getDish_id() + ": dish update success");
+        logger.info(dish.getDishId() + ": dish update success");
         return MsgUtils.success();
     }
 
