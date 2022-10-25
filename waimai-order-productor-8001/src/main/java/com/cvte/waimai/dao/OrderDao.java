@@ -10,7 +10,8 @@ import pojo.OrderDB;
 @Repository
 public interface OrderDao {
 
-    @Select("SELECT * FROM wm_order WHERE order_id = #{orderId}")
+    @Select("SELECT order_id, order_detail_list, address, price, " +
+            "user_id, state, created_time FROM wm_order WHERE order_id = #{orderId}")
     OrderDB getOrderById(@Param("orderId") String orderId);
 
 }

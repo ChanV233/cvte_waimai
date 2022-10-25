@@ -42,7 +42,7 @@ public interface DishDao {
      * @param dishId
      * @return
      */
-    @Select("SELECT * FROM wm_dish WHERE dish_id = #{dishId} and is_deleted = 0")
+    @Select("SELECT dish_id, dish_name, image_url, price, merchant_id, created_time FROM wm_dish WHERE dish_id = #{dishId} and is_deleted = 0")
     Dish getDishById(@Param("dishId") int dishId);
 
     /**
@@ -51,7 +51,7 @@ public interface DishDao {
      * @param pageSize
      * @return
      */
-    @Select("SELECT * FROM wm_dish WHERE is_deleted = '0' LIMIT #{curPage}, #{pageSize}")
+    @Select("SELECT dish_id, dish_name, image_url, price, merchant_id, created_time FROM wm_dish WHERE is_deleted = '0' LIMIT #{curPage}, #{pageSize}")
     List<Dish> getDishes(@Param("curPage") int curPage, @Param("pageSize") int pageSize);
 
 
