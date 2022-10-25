@@ -28,6 +28,9 @@ public class OrderController {
     @Autowired
     private OrderProducerService orderProducerService;
 
+    @Autowired
+    private DishesManagementService dishesManagementService;
+
     @ApiOperation("下单")
     @PostMapping(value = "/order/producer")
     public MsgUtils order(@RequestBody Order order) {

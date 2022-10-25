@@ -5,9 +5,11 @@ import com.cvte.waimai.dao.DishDao;
 import com.cvte.waimai.exception.AppException;
 import com.cvte.waimai.exception.AppExceptionCodeMsg;
 import com.cvte.waimai.service.DishService;
+import com.cvte.waimai.utils.DishCacheMqUtils;
 import com.cvte.waimai.utils.MsgUtils;
 import com.cvte.waimai.utils.RedisUtils;
 import org.apache.log4j.Logger;
+import org.redisson.api.RBloomFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,6 +17,7 @@ import pojo.Dish;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Random;
 
 @Service
 public class DishServiceImpl implements DishService{
@@ -27,12 +30,20 @@ public class DishServiceImpl implements DishService{
     @Resource
     private RedisUtils redisUtils;
 
+    @Autowired
+    RBloomFilter<String> bloomFilter;
+
+    @Autowired
+    private DishCacheMqUtils dishCacheMqUtils;
+
     private static final String KEY_PREFIX = "waimai_dish_%s";
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public MsgUtils addDish(Dish dish) {
         this.dishDao.addDish(dish);
+        String curDishCacheKey = String.format(KEY_PREFIX, dish.getDish_id());
+        this.bloomFilter.add(curDishCacheKey);
         logger.info("dish add success");
         return MsgUtils.success();
     }
@@ -43,8 +54,7 @@ public class DishServiceImpl implements DishService{
         String curDishCacheKey = String.format(KEY_PREFIX, dishId);
         redisUtils.remove(curDishCacheKey);
         this.dishDao.deleteDish(dishId);
-        Thread.sleep(100);
-        redisUtils.remove(curDishCacheKey);
+        dishCacheMqUtils.sendMessage(curDishCacheKey);
         logger.info(dishId + ": dish delete success");
         return MsgUtils.success();
     }
@@ -68,14 +78,18 @@ public class DishServiceImpl implements DishService{
         String curDishCacheKey = String.format(KEY_PREFIX, dish.getDish_id());
         redisUtils.remove(curDishCacheKey);
         this.dishDao.updateDish(dish);
-        Thread.sleep(100);
-        redisUtils.remove(curDishCacheKey);logger.info(dish.getDish_id() + ": dish update success");
+        dishCacheMqUtils.sendMessage(curDishCacheKey);
+        logger.info(dish.getDish_id() + ": dish update success");
         return MsgUtils.success();
     }
 
     @Override
     public MsgUtils getDishById(int dishId) {
         String curDishCacheKey = String.format(KEY_PREFIX, dishId);
+        boolean isExist = this.bloomFilter.contains(curDishCacheKey);
+        if (!isExist) {
+            throw new AppException(AppExceptionCodeMsg.DISH_NOT_FOUND);
+        }
         String cache = redisUtils.get(curDishCacheKey);
         if (null != cache) {
             //if cache exist return
@@ -85,12 +99,23 @@ public class DishServiceImpl implements DishService{
             return MsgUtils.success(dish);
         } else {
             //if cache no exist find in db and push in cache
-            Dish dish = this.dishDao.getDishById(dishId);
-            if (dish != null) {
-                String dishStr = JSONObject.toJSONString(dish);
-                redisUtils.set(curDishCacheKey, dishStr, 60L * 5);
-            } else {
-                throw new AppException(AppExceptionCodeMsg.DISH_NOT_FOUND);
+            Dish dish;
+            synchronized (DishServiceImpl.class) {
+                //query cache again
+                String cache1 = redisUtils.get(curDishCacheKey);
+                if (cache1 != null) {
+                    dish = JSONObject.parseObject(cache1, Dish.class);
+                    return MsgUtils.success(dish);
+                }
+                dish = this.dishDao.getDishById(dishId);
+                if (dish != null) {
+                    String dishStr = JSONObject.toJSONString(dish);
+                    Random random = new Random();
+                    int randomNum = random.nextInt(300);
+                    redisUtils.set(curDishCacheKey, dishStr, 60L * 5 + randomNum);
+                } else {
+                    throw new AppException(AppExceptionCodeMsg.DISH_NOT_FOUND);
+                }
             }
             return MsgUtils.success(dish);
         }

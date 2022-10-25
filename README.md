@@ -57,11 +57,11 @@ PRIMARY KEY (`order_id`)
 ### 菜品管理模块
 #### 流程图
 - 插入菜品
-![img_3.png](img_3.png)
+  ![img_3.png](img_3.png)
 - 获取菜品
-![img_4.png](img_4.png)
+  ![img_4.png](img_4.png)
 - 删除、更新菜品
-![img_5.png](img_5.png)
+  ![img_5.png](img_5.png)
 #### 数据库表
 ```sql
 CREATE TABLE `wm_dish` (

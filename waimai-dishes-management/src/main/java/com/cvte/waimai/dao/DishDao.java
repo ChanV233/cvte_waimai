@@ -18,7 +18,8 @@ public interface DishDao {
      */
     @Insert("INSERT INTO wm_dish (dish_name, image_url, price, merchant_id) " +
             "VALUES(#{dish.dish_name}, #{dish.image_url}, #{dish.price}, #{dish.merchant_id})")
-    void addDish(@Param("dish") Dish dish);
+    @Options(useGeneratedKeys = true, keyProperty = "dish_id", keyColumn = "dish_id")
+    int addDish(@Param("dish") Dish dish);
 
     /**
      * 删除菜品（软删）
