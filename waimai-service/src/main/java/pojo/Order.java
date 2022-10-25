@@ -14,11 +14,11 @@ import java.util.List;
 @NoArgsConstructor
 @ToString
 public class Order implements Serializable {
-    private String order_id;
+    private String orderId;
     List<OrderDetail> orderDetailList;
     private Address address;
     private double price;
-    private long user_id;
+    private long userId;
     private int state;          //0. 未处理 1.处理成功 2.处理失败
-    private Date created_time;
+    private Date createdTime;
 }

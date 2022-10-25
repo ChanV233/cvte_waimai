@@ -42,8 +42,7 @@ public class DishServiceImpl implements DishService{
     @Transactional(rollbackFor = Exception.class)
     public MsgUtils addDish(Dish dish) {
         this.dishDao.addDish(dish);
-        String curDishCacheKey = String.format(KEY_PREFIX, dish.getDishId());
-        this.bloomFilter.add(curDishCacheKey);
+        this.bloomFilter.add(String.valueOf(dish.getDishId()));
         logger.info("dish add success");
         return MsgUtils.success(dish);
     }
@@ -88,11 +87,11 @@ public class DishServiceImpl implements DishService{
 
     @Override
     public MsgUtils getDishById(int dishId) {
-        String curDishCacheKey = String.format(KEY_PREFIX, dishId);
-        boolean isExist = this.bloomFilter.contains(curDishCacheKey);
+        boolean isExist = this.bloomFilter.contains(String.valueOf(dishId));
         if (!isExist) {
             throw new AppException(AppExceptionCodeMsg.DISH_NOT_FOUND);
         }
+        String curDishCacheKey = String.format(KEY_PREFIX, dishId);
         String cache = redisUtils.get(curDishCacheKey);
         if (null != cache) {
             //if cache exist return

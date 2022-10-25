@@ -5,19 +5,15 @@ import com.cvte.waimai.exception.AppExceptionCodeMsg;
 import com.cvte.waimai.utils.MsgUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.http.HttpRequest;
+import org.redisson.api.RBloomFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import pojo.Dish;
 import pojo.Order;
 import pojo.OrderDetail;
-import service.DishesManagementService;
 import service.OrderProducerService;
-
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,7 +25,7 @@ public class OrderController {
     private OrderProducerService orderProducerService;
 
     @Autowired
-    private DishesManagementService dishesManagementService;
+    RBloomFilter<String> bloomFilter;
 
     @ApiOperation("下单")
     @PostMapping(value = "/order/producer")
@@ -45,6 +41,10 @@ public class OrderController {
         }
         double price = 0.0;
         for (OrderDetail orderDetail : order.getOrderDetailList()) {
+            if (orderDetail.getDish() == null
+                    || !bloomFilter.contains(String.valueOf(orderDetail.getDish().getDishId()))) {
+                throw new AppException(AppExceptionCodeMsg.ILLEGAL_ORDER);
+            }
             price += orderDetail.getCount() * orderDetail.getDish().getPrice();
         }
         order.setPrice(price);

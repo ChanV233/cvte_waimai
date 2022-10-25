@@ -32,7 +32,7 @@ public class OrderProducerServiceImpl implements OrderProducerService {
     public MsgUtils order(Order order) {
         //fill orderId
         String orderId = idGenerator.nextId();
-        order.setOrder_id(orderId);
+        order.setOrderId(orderId);
         String orderStr = JSONObject.toJSONString(order);
         this.orderMqUtils.sendMessage(orderStr, orderId);
 //        logger.info(order.getOrder_id() + " order success");
