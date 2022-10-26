@@ -7,10 +7,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
 
-/**
- * @author ChanV
- * @create 2021-02-04-22:02
- */
 @Configuration
 public class ConfigBean {
 
