@@ -1,6 +1,7 @@
 package com.cvte.waimai.config;
 
 import com.netflix.loadbalancer.IRule;
+import com.netflix.loadbalancer.RoundRobinRule;
 import com.netflix.loadbalancer.WeightedResponseTimeRule;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
@@ -18,6 +19,6 @@ public class ConfigBean {
 
     @Bean
     public IRule ribbonRule() {
-        return new WeightedResponseTimeRule();
+        return new RoundRobinRule();
     }
 }
